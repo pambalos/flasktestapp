@@ -17,7 +17,7 @@
 
 
 # Import Flask so that we can create an app instance
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, flash, redirect
 from forms import RegistrationForm, LoginForm
 # All Flask app must create an app instance like this:
 app = Flask(__name__)
@@ -41,7 +41,7 @@ posts = [
 # Invoke this one with http://127.0.0.1:5000
 @app.route('/')
 @app.route('/home')
-def Index():
+def home():
    return render_template('home.html', posts = posts)
 
 @app.route('/about')
@@ -51,11 +51,20 @@ def about():
 @app.route('/register', methods = ['GET', 'POST'])
 def register():
     form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Account created for {form.username.data}!', 'success')
+        return redirect(url_for('home'))
     return render_template('register.html', title = "Register", form = form)
 
-@app.route('/login')
+@app.route('/login', methods = ['GET', 'POST'])
 def login():
     form = LoginForm()
+    if form.validate_on_submit():
+        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
+            flash('Login Successful', 'success')
+            return redirect(url_for('home'))
+        else:
+            flash('Login unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title = "Login", form = form)
 # Invoke this one with http://127.0.0.1:5000/hello
 @app.route('/hello')

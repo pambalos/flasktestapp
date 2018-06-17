@@ -19,7 +19,7 @@ class LoginForm(FlaskForm):
     email = StringField("Email", validators = [DataRequired(), Email()])
 
     username = StringField("Username",
-                            validators = [DataRequired()])
+                            validators = [])
 
     password = PasswordField("Password",
                             validators = [DataRequired()])
